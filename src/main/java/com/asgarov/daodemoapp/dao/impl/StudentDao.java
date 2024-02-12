@@ -12,22 +12,22 @@ public class StudentDao extends AbstractDao<Student, Integer> {
 
     @Override
     protected String getCreateQuery(Student student) {
-        return "INSERT INTO students (group_id, first_name, last_name) VALUES (?,?,?);";
+        return "INSERT INTO student (group_id, first_name, last_name) VALUES (?,?,?);";
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE students SET group_id = ?, first_name = ?, last_name = ? WHERE student_id = ?;";
+        return "UPDATE student SET group_id = ?, first_name = ?, last_name = ? WHERE student_id = ?;";
     }
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT * FROM students WHERE student_id = ?;";
+        return "SELECT * FROM student WHERE student_id = ?;";
     }
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM students WHERE student_id = ?";
+        return "DELETE FROM student WHERE student_id = ?";
     }
 
     @Override
@@ -42,13 +42,15 @@ public class StudentDao extends AbstractDao<Student, Integer> {
     @Override
     protected void setObjectIntoStatement(PreparedStatement statement, Student student) throws DaoException {
         try {
-            if (student.getStudentId() != 0) {
-                statement.setInt(1, student.getGroupId());
+            if (student.getStudentId() != null) {
+                // update statement
+                statement.setObject(1, student.getGroupId());
                 statement.setString(2, student.getFirstName());
                 statement.setString(3, student.getLastName());
                 statement.setInt(4, student.getStudentId());
             } else {
-                statement.setInt(1, student.getGroupId());
+                // create statement (id will be generated in the database)
+                statement.setObject(1, student.getGroupId());
                 statement.setString(2, student.getFirstName());
                 statement.setString(3, student.getLastName());
             }
@@ -69,5 +71,10 @@ public class StudentDao extends AbstractDao<Student, Integer> {
             throw new DaoException(e.getMessage(), e);
         }
         return student;
+    }
+
+    @Override
+    public void setId(Student student, Integer id) {
+        student.setStudentId(id);
     }
 }

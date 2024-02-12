@@ -1,3 +1,6 @@
+-- Order of table creation is important!
+-- Referenced tables have to be created first
+
 CREATE TABLE IF NOT EXISTS student_group(
                        group_id SERIAL PRIMARY KEY,
                        group_name VARCHAR(30) NOT NULL UNIQUE

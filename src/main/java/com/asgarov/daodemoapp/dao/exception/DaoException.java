@@ -1,10 +1,6 @@
 package com.asgarov.daodemoapp.dao.exception;
 
-public class DaoException extends Exception {
-
-    public DaoException() {
-        super();
-    }
+public class DaoException extends RuntimeException {
 
     public DaoException(String message, Throwable cause) {
         super(message, cause);

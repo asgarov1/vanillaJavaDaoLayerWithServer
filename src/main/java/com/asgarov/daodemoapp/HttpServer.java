@@ -10,9 +10,12 @@ import static java.lang.Integer.parseInt;
 
 public class HttpServer {
 
+    public static final String PORT = "server.port";
+
     public static void main(String[] args) throws IOException {
-        int port = parseInt(getProperty("port"));
+        int port = parseInt(getProperty(PORT));
         try (ServerSocket server = new ServerSocket(port)) {
+            System.out.println("Server is ready to accept connections...");
             while (true) {
                 new Thread(new FrontDispatcher(server.accept())).start();
             }

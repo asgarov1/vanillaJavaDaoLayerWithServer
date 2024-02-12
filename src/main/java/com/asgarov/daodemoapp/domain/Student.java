@@ -1,21 +1,12 @@
 package com.asgarov.daodemoapp.domain;
 
 public class Student {
-    private int studentId;
-    private int groupId;
+    private Integer studentId;
+    private Integer groupId;
     private String firstName;
     private String lastName;
 
-    public Student() {
-    }
-
-    public Student(int groupId, String firstName, String lastName) {
-        this.groupId = groupId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
@@ -23,11 +14,11 @@ public class Student {
         this.studentId = studentId;
     }
 
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 

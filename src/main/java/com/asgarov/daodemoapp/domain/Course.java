@@ -2,23 +2,18 @@ package com.asgarov.daodemoapp.domain;
 
 public class Course {
 
-    private int id;
+    private Integer id;
     private String name;
     private String description;
 
     public Course() {
     }
 
-    public Course(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

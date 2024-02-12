@@ -3,13 +3,11 @@ package com.asgarov.daodemoapp.dao;
 import com.asgarov.daodemoapp.dao.exception.DaoException;
 import com.asgarov.daodemoapp.util.ConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public abstract class AbstractDao<T, K> implements GenericDao<T, K> {
     private static final int UPDATE_EXECUTED_SUCCESSFULLY = 1;
+    public static final String COULD_NOT_FIND_AN_OBJECT_WITH_SUCH_ID = "Couldn't find an object with such ID!";
 
     // CRUD Queries
     protected abstract String getCreateQuery(T object);
@@ -34,16 +32,21 @@ public abstract class AbstractDao<T, K> implements GenericDao<T, K> {
 
 
     @Override
-    public boolean create(T object) throws DaoException {
+    public T create(T object) throws DaoException {
         String createQuery = getCreateQuery(object);
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement(createQuery)) {
+             PreparedStatement statement = connection.prepareStatement(createQuery, Statement.RETURN_GENERATED_KEYS)) {
 
             setObjectIntoStatement(statement, object);
-            if (statement.executeUpdate() < UPDATE_EXECUTED_SUCCESSFULLY) {
-                throw new DaoException("Problem with creating the object!");
+            statement.executeUpdate();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    setId(object, (K) generatedKeys.getObject(1));
+                } else {
+                    throw new SQLException("Problem with creating the object!");
+                }
             }
-            return true;
+            return object;
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -61,7 +64,7 @@ public abstract class AbstractDao<T, K> implements GenericDao<T, K> {
             if (resultSet.next()) {
                 return readObject(resultSet);
             } else {
-                throw new DaoException("Couldn't find an object with such ID!");
+                throw new DaoException(COULD_NOT_FIND_AN_OBJECT_WITH_SUCH_ID);
             }
         } catch (SQLException e) {
             throw new DaoException(e.getMessage());

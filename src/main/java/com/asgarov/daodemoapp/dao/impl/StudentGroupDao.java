@@ -46,7 +46,7 @@ public class StudentGroupDao extends AbstractDao<StudentGroup, Integer> {
         try {
             if (group.getId() != 0) {
                 statement.setString(1, group.getName());
-                statement.setInt(2, group.getId());
+                statement.setLong(2, group.getId());
             } else {
                 statement.setString(1, group.getName());
             }
@@ -65,5 +65,10 @@ public class StudentGroupDao extends AbstractDao<StudentGroup, Integer> {
             throw new DaoException(e.getMessage(), e);
         }
         return group;
+    }
+
+    @Override
+    public void setId(StudentGroup object, Integer id) {
+        object.setId(id);
     }
 }

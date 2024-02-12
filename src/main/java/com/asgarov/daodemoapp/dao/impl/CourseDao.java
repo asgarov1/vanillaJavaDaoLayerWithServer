@@ -46,7 +46,7 @@ public class CourseDao extends AbstractDao<Course, Integer> {
             if (course.getId() != 0) {
                 statement.setString(1, course.getName());
                 statement.setString(2, course.getDescription());
-                statement.setInt(3, course.getId());
+                statement.setLong(3, course.getId());
             } else {
                 statement.setString(1, course.getName());
                 statement.setString(2, course.getDescription());
@@ -69,14 +69,8 @@ public class CourseDao extends AbstractDao<Course, Integer> {
         return course;
     }
 
-    /**
-     * When calling this method don't forget to also delete studentCourses entry
-     *  `studentCourseDao.delete(course);`
-     * @param courseId the id of the course
-     * @throws DaoException {@link DaoException}
-     */
     @Override
-    public void delete(Integer courseId) throws DaoException {
-        super.delete(courseId);
+    public void setId(Course course, Integer id) {
+        course.setId(id);
     }
 }

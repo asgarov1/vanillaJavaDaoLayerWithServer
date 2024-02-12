@@ -2,16 +2,20 @@ package com.asgarov.daodemoapp.http;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.asgarov.daodemoapp.http.Constants.*;
+import static com.asgarov.daodemoapp.controller.Constants.CONTENT_LENGTH;
 import static java.lang.Integer.parseInt;
 import static java.lang.System.in;
 import static java.lang.System.lineSeparator;
 
 public class HttpRequest {
+
+    /**
+     * Regex to match content surrounded by curly braces {}
+     */
+    private final Pattern JSON_CONTENT_REGEX = Pattern.compile("\\{([^}]*)}");
 
     private final String receivedRequest;
 
@@ -64,64 +68,16 @@ public class HttpRequest {
         return headerLine.substring(0, headerLine.indexOf(" /"));
     }
 
-    public Map<String, String> getHeaders() {
-        return readHeaders();
-    }
-
-    public int getHeaderCount() {
-        return getHeaders().size();
-    }
-
-    public String getUserAgent() {
-        return getHeaders().get(USER_AGENT);
-    }
-
-    public int getContentLength() {
-        return getHeaders().containsKey(CONTENT_LENGTH) ? parseInt(getHeaders().get(CONTENT_LENGTH)) : 0;
-    }
-
-    public String getContentType() {
-        return getHeaders().getOrDefault(CONTENT_TYPE, "");
-    }
-
-    public InputStream getContentStream() {
-        return new ByteArrayInputStream(getContentString().getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String getContentString() {
-        return Arrays.stream(receivedRequest
-                        .split("\n"))
-                .filter(line -> line.contains("[") || line.contains("{"))
-                .map(line -> line.replace("\r", ""))
-                .findFirst()
-                .orElseGet(this::getLastLine);
-    }
-
-    private String getLastLine() {
-        return receivedRequest.split("\n")[receivedRequest.split("\n").length - 1];
-    }
-
-    public byte[] getContentBytes() {
-        return getContentString().getBytes();
-    }
-
-    private Map<String, String> readHeaders() {
-        Map<String, String> headers = new HashMap<>();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(getInputStream()))) {
-            String line;
-            while ((line = in.readLine()) != null && !line.isEmpty()) {
-                if (line.contains(":") && !line.contains("{")) {
-                    headers.put(line.split(": ")[0], line.split(": ")[1]);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public String getJsonContent() {
+        Matcher matcher = JSON_CONTENT_REGEX.matcher(receivedRequest);
+        if (matcher.find()) {
+            return matcher.group();
         }
-        return headers;
+        return null;
     }
 
     private String getHeaderLine() {
-        String line = "";
+        String line;
         try (BufferedReader in = new BufferedReader(new InputStreamReader(getInputStream()))) {
             while ((line = in.readLine()) != null && line.isEmpty()) { /* skipping to the headerLine */ }
         } catch (IOException e) {

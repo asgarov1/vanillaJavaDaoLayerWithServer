@@ -3,10 +3,11 @@ package com.asgarov.daodemoapp.dao.impl;
 import com.asgarov.daodemoapp.dao.AbstractDao;
 import com.asgarov.daodemoapp.dao.exception.DaoException;
 import com.asgarov.daodemoapp.domain.StudentCourse;
+import com.asgarov.daodemoapp.util.ConnectionFactory;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentCourseDao extends AbstractDao<StudentCourse, Integer> {
 
@@ -68,5 +69,29 @@ public class StudentCourseDao extends AbstractDao<StudentCourse, Integer> {
             throw new DaoException(e.getMessage(), e);
         }
         return studentCourse;
+    }
+
+    @Override
+    public void setId(StudentCourse object, Integer id) {
+        object.setStudentCourseId(id);
+    }
+
+    public List<StudentCourse> findAllByStudentId(Integer studentId) throws DaoException {
+        List<StudentCourse> studentCourses = new ArrayList<>();
+        try (Connection connection = ConnectionFactory.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            String query = "SELECT * FROM student_course WHERE student_id = " + studentId + ";";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                int course_id = resultSet.getInt("course_id");
+                int studentCourseId = resultSet.getInt("student_course_id");
+                studentCourses.add(new StudentCourse(studentCourseId, studentId, course_id));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+        return studentCourses;
     }
 }
