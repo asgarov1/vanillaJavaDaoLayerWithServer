@@ -1,7 +1,5 @@
 package com.asgarov.daodemoapp.http;
 
-import jdk.jfr.ContentType;
-
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;

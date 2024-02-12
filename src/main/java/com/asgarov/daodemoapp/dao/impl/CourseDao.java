@@ -3,11 +3,10 @@ package com.asgarov.daodemoapp.dao.impl;
 import com.asgarov.daodemoapp.dao.AbstractDao;
 import com.asgarov.daodemoapp.dao.exception.DaoException;
 import com.asgarov.daodemoapp.domain.Course;
-import com.asgarov.daodemoapp.util.ConnectionFactory;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CourseDao extends AbstractDao<Course, Integer> {
 

@@ -4,14 +4,14 @@ public class StudentGroup {
     private int id;
     private String name;
 
-    public Group() {
+    public StudentGroup() {
     }
 
-    public Group(String name) {
+    public StudentGroup(String name) {
         this.name = name;
     }
 
-    public Group(int id, String name) {
+    public StudentGroup(int id, String name) {
         this.id = id;
         this.name = name;
     }
