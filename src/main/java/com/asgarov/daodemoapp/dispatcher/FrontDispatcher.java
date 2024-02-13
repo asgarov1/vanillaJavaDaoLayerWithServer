@@ -10,7 +10,7 @@ import com.asgarov.daodemoapp.http.HttpStatus;
 import java.io.IOException;
 import java.net.Socket;
 
-public class FrontDispatcher implements Runnable {
+public class FrontDispatcher {
 
     private final Socket connectionSocket;
 
@@ -18,10 +18,9 @@ public class FrontDispatcher implements Runnable {
         this.connectionSocket = connectionSocket;
     }
 
-    @Override
-    public void run() {
+    public void handleRequest() {
         try {
-            var request = HttpRequest.valueOf(connectionSocket.getInputStream());
+            HttpRequest request = HttpRequest.valueOf(connectionSocket.getInputStream());
             HttpResponse response = getResponse(request);
             response.send(connectionSocket.getOutputStream());
             connectionSocket.close();
@@ -50,8 +49,14 @@ public class FrontDispatcher implements Runnable {
         }
 
         Controller controller = switch (path) {
-            case StudentController.ENDPOINT -> new StudentController();
-            case CourseController.ENDPOINT -> new CourseController();
+            case StudentController.ENDPOINT -> {
+                System.out.printf("Matched '%s' to %s%n", request.getUrl().getPath(), StudentController.class.getSimpleName());
+                yield new StudentController();
+            }
+            case CourseController.ENDPOINT -> {
+                System.out.printf("Matched '%s' to %s%n", request.getUrl().getPath(), CourseController.class.getSimpleName());
+                yield new CourseController();
+            }
             default -> throw new IllegalArgumentException("Unexpected url path: " + path);
         };
         try {

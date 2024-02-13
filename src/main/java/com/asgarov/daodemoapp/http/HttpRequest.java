@@ -5,12 +5,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.asgarov.daodemoapp.controller.Constants.CONTENT_LENGTH;
 import static java.lang.Integer.parseInt;
 import static java.lang.System.in;
 import static java.lang.System.lineSeparator;
 
 public class HttpRequest {
+
+    public static final String CONTENT_LENGTH = "Content-Length";
 
     /**
      * Regex to match content surrounded by curly braces {}
@@ -52,8 +53,9 @@ public class HttpRequest {
         String substring = contentLengthLine.substring(start);
         int end = 0;
         for (int i = 0; i < substring.length(); i++) {
-            if(!Character.isDigit(substring.charAt(i))){
-                end = start + i; break;
+            if (!Character.isDigit(substring.charAt(i))) {
+                end = start + i;
+                break;
             }
         }
         return parseInt(contentLengthLine.substring(start, end));
@@ -76,6 +78,13 @@ public class HttpRequest {
         return null;
     }
 
+    // GET /student/7 HTTP/1.1
+    // User-Agent: PostmanRuntime/7.36.1
+    // Accept: */*
+    // Postman-Token: 8c5327ae-f24a-40f8-869f-dccb3495bb09
+    // Host: localhost:8080
+    // Accept-Encoding: gzip, deflate, br
+    // Connection: keep-alive
     private String getHeaderLine() {
         String line;
         try (BufferedReader in = new BufferedReader(new InputStreamReader(getInputStream()))) {

@@ -2,6 +2,9 @@ package com.asgarov.daodemoapp.http;
 
 public class HttpUrl {
 
+    /**
+     * Looks like this:  `GET /student/7 HTTP/1.1`
+     */
     private final String headerLine;
 
     HttpUrl(String headerLine) {

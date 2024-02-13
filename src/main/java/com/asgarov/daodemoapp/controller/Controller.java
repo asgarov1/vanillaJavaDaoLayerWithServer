@@ -7,25 +7,32 @@ import com.asgarov.daodemoapp.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.asgarov.daodemoapp.controller.Constants.*;
 import static com.asgarov.daodemoapp.http.HttpStatus.*;
 
 public interface Controller {
+    String POST = "POST";
+    String GET = "GET";
+    String PUT = "PUT";
+    String DELETE = "DELETE";
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-
     default HttpResponse handleRequest(HttpRequest request) throws Exception {
         if (request.getMethod().equals(POST)) {
+            System.out.println("\tHandling a POST method");
             return handlePost(request);
         } else if (request.getMethod().equals(GET)) {
+            System.out.println("\tHandling a GET method");
             return handleGet(request);
         } else if (request.getMethod().equals(PUT)) {
+            System.out.println("\tHandling a PUT method");
             return handlePut(request);
         } else if (request.getMethod().equals(DELETE)) {
+            System.out.println("\tHandling a DELETE method");
             return handleDelete(request);
         }
 
+        System.out.println("\tNot matching handler found, returning: NOT FOUND 404");
         return notFound();
     }
 

@@ -51,6 +51,7 @@ public class StudentController implements Controller {
     private HttpResponse getStudent(Integer id) throws JsonProcessingException, DaoException {
         try {
             Student student = studentDao.read(id);
+            System.out.printf("\tReturning result: %s%n", student);
             return ok(student);
         } catch (DaoException e) {
             if (COULD_NOT_FIND_AN_OBJECT_WITH_SUCH_ID.equals(e.getMessage())) {
